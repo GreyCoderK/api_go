@@ -5,6 +5,7 @@ import (
 
 	"./database"
 	. "./model"
+	. "./route"
 	"github.com/jinzhu/gorm"
 )
 
@@ -25,6 +26,9 @@ func main() {
 	}
 
 	Migration(db)
+
+	router := SetupRoutes()
+	router.Run(":8000")
 }
 
 func Migration(db *gorm.DB) {
