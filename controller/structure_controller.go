@@ -16,9 +16,7 @@ var m Structure
 var r *StructureRepository
 
 func StructureCreate(c *gin.Context) {
-	var m Structure
-	var r *StructureRepository
-
+	r = c.MustGet("structrepo").(*StructureRepository)
 	err := c.ShouldBindJSON(&m)
 
 	if err != nil {
@@ -40,6 +38,7 @@ func StructureCreate(c *gin.Context) {
 
 func StructureHome(c *gin.Context) {
 	code := http.StatusOK
+	r = c.MustGet("structrepo").(*StructureRepository)
 
 	response := services.FindAllStructures(*r)
 
@@ -52,6 +51,7 @@ func StructureHome(c *gin.Context) {
 
 func StructureShow(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	r = c.MustGet("structrepo").(*StructureRepository)
 
 	if err != nil {
 		response := dtos.Response{Success: false, Message: err.Error()}
@@ -72,6 +72,7 @@ func StructureShow(c *gin.Context) {
 
 func StructureUpdate(c *gin.Context) {
 	id, errors := strconv.ParseUint(c.Param("id"), 10, 32)
+	r = c.MustGet("structrepo").(*StructureRepository)
 
 	if errors != nil {
 		response := dtos.Response{Success: false, Message: errors.Error()}
@@ -103,6 +104,7 @@ func StructureUpdate(c *gin.Context) {
 
 func StructureDelete(c *gin.Context) {
 	id, errors := strconv.ParseUint(c.Param("id"), 10, 32)
+	r = c.MustGet("structrepo").(*StructureRepository)
 
 	if errors != nil {
 		response := dtos.Response{Success: false, Message: errors.Error()}
@@ -123,6 +125,7 @@ func StructureDelete(c *gin.Context) {
 
 func StructureDeleteMultiple(c *gin.Context) {
 	var multiID dtos.MultiID
+	r = c.MustGet("structrepo").(*StructureRepository)
 
 	err := c.ShouldBindJSON(&multiID)
 
@@ -146,6 +149,21 @@ func StructureDeleteMultiple(c *gin.Context) {
 	code := http.StatusOK
 
 	response := services.DeleteStructureByIds(&multiID, *r)
+
+	if !response.Success {
+		code = http.StatusBadRequest
+	}
+
+	c.JSON(code, response)
+}
+
+func StructurePagination(c *gin.Context) {
+	code := http.StatusOK
+
+	r = c.MustGet("structrepo").(*StructureRepository)
+	pagination := helpers.GeneratePaginationRequest(c)
+
+	response := services.Pagination(*r, c, pagination)
 
 	if !response.Success {
 		code = http.StatusBadRequest

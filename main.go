@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	dbUser, dbPwd, dbName := "root", "limitless", "dev_app"
+	dbUser, dbPwd, dbName := "root", "limitless", "api"
 
 	db, err := database.Connect(dbUser, dbPwd, dbName)
 	defer db.Close()
@@ -27,7 +27,7 @@ func main() {
 
 	Migration(db)
 
-	router := SetupRoutes()
+	router := SetupRoutes(db)
 	router.Run(":8000")
 }
 
