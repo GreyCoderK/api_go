@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
+func CreateCategorieArticle(m *CategorieArticle, r CategorieArticleRepository) dtos.Response {
 	uuidResult, err := uuid.NewUUID()
 
 	if err != nil {
@@ -26,47 +26,47 @@ func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*CategorieArticle)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func FindAllStructures(r StructureRepository) dtos.Response {
+func FindAllCategorieArticles(r CategorieArticleRepository) dtos.Response {
 	operationResult := r.FindAll()
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var datas = operationResult.Result.(*Structures)
+	var datas = operationResult.Result.(*CategorieArticles)
 
 	return dtos.Response{Success: true, Data: datas}
 }
 
-func FindOneStructureById(id uint, r StructureRepository) dtos.Response {
+func FindOneCategorieArticleById(id uint, r CategorieArticleRepository) dtos.Response {
 	operationResult := r.FindOneById(id)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*CategorieArticle)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Response {
-	existingStructureResponse := FindOneStructureById(id, r)
+func UpdateCategorieArticleById(id uint, m CategorieArticle, r CategorieArticleRepository) dtos.Response {
+	existingCategorieArticleResponse := FindOneCategorieArticleById(id, r)
 
-	if !existingStructureResponse.Success {
-		return existingStructureResponse
+	if !existingCategorieArticleResponse.Success {
+		return existingCategorieArticleResponse
 	}
 
-	existingStructure := existingStructureResponse.Data.(*Structure)
+	existingCategorieArticle := existingCategorieArticleResponse.Data.(*CategorieArticle)
 
-	existingStructure.RaisonSocial = m.RaisonSocial
+	existingCategorieArticle.Libelle = m.Libelle
 
-	operationResult := r.Save(existingStructure)
+	operationResult := r.Save(existingCategorieArticle)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
@@ -75,7 +75,7 @@ func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Respo
 	return dtos.Response{Success: true, Data: operationResult.Result}
 }
 
-func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
+func DeleteOneCategorieArticleById(id uint, r CategorieArticleRepository) dtos.Response {
 	operationResult := r.DeleteOneById(id)
 
 	if operationResult.Error != nil {
@@ -85,7 +85,7 @@ func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
 	return dtos.Response{Success: true}
 }
 
-func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Response {
+func DeleteCategorieArticleByIds(multiId *dtos.MultiID, r CategorieArticleRepository) dtos.Response {
 	operationResult := r.DeleteByIds(&multiId.Ids)
 
 	if operationResult.Error != nil {
@@ -95,7 +95,7 @@ func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Res
 	return dtos.Response{Success: true}
 }
 
-func PaginationStructure(r StructureRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
+func PaginationCategorieArticle(r CategorieArticleRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
 	operationResult, totalPages := r.Pagination(p)
 
 	if operationResult.Error != nil {

@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
+func CreateFonction(m *Fonction, r FonctionRepository) dtos.Response {
 	uuidResult, err := uuid.NewUUID()
 
 	if err != nil {
@@ -26,47 +26,47 @@ func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*Fonction)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func FindAllStructures(r StructureRepository) dtos.Response {
+func FindAllFonctions(r FonctionRepository) dtos.Response {
 	operationResult := r.FindAll()
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var datas = operationResult.Result.(*Structures)
+	var datas = operationResult.Result.(*Fonctions)
 
 	return dtos.Response{Success: true, Data: datas}
 }
 
-func FindOneStructureById(id uint, r StructureRepository) dtos.Response {
+func FindOneFonctionById(id uint, r FonctionRepository) dtos.Response {
 	operationResult := r.FindOneById(id)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*Fonction)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Response {
-	existingStructureResponse := FindOneStructureById(id, r)
+func UpdateFonctionById(id uint, m Fonction, r FonctionRepository) dtos.Response {
+	existingFonctionResponse := FindOneFonctionById(id, r)
 
-	if !existingStructureResponse.Success {
-		return existingStructureResponse
+	if !existingFonctionResponse.Success {
+		return existingFonctionResponse
 	}
 
-	existingStructure := existingStructureResponse.Data.(*Structure)
+	existingFonction := existingFonctionResponse.Data.(*Fonction)
 
-	existingStructure.RaisonSocial = m.RaisonSocial
+	existingFonction.Libelle = m.Libelle
 
-	operationResult := r.Save(existingStructure)
+	operationResult := r.Save(existingFonction)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
@@ -75,7 +75,7 @@ func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Respo
 	return dtos.Response{Success: true, Data: operationResult.Result}
 }
 
-func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
+func DeleteOneFonctionById(id uint, r FonctionRepository) dtos.Response {
 	operationResult := r.DeleteOneById(id)
 
 	if operationResult.Error != nil {
@@ -85,7 +85,7 @@ func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
 	return dtos.Response{Success: true}
 }
 
-func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Response {
+func DeleteFonctionByIds(multiId *dtos.MultiID, r FonctionRepository) dtos.Response {
 	operationResult := r.DeleteByIds(&multiId.Ids)
 
 	if operationResult.Error != nil {
@@ -95,7 +95,7 @@ func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Res
 	return dtos.Response{Success: true}
 }
 
-func PaginationStructure(r StructureRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
+func PaginationFonction(r FonctionRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
 	operationResult, totalPages := r.Pagination(p)
 
 	if operationResult.Error != nil {

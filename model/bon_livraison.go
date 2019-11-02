@@ -13,3 +13,5 @@ type BonLivraison struct {
 	Art       *uint     `json:"article" binding:"required"`
 	Liv       *uint     `json:"livraison" binding:"required"`
 }
+
+type BonLivraisons []BonLivraison

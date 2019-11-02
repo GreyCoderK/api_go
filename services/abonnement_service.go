@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
+func CreateAbonnement(m *Abonnement, r AbonnementRepository) dtos.Response {
 	uuidResult, err := uuid.NewUUID()
 
 	if err != nil {
@@ -26,47 +26,48 @@ func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*Abonnement)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func FindAllStructures(r StructureRepository) dtos.Response {
+func FindAllAbonnements(r AbonnementRepository) dtos.Response {
 	operationResult := r.FindAll()
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var datas = operationResult.Result.(*Structures)
+	var datas = operationResult.Result.(*Abonnements)
 
 	return dtos.Response{Success: true, Data: datas}
 }
 
-func FindOneStructureById(id uint, r StructureRepository) dtos.Response {
+func FindOneAbonnementById(id uint, r AbonnementRepository) dtos.Response {
 	operationResult := r.FindOneById(id)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*Abonnement)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Response {
-	existingStructureResponse := FindOneStructureById(id, r)
+func UpdateAbonnementById(id uint, m Abonnement, r AbonnementRepository) dtos.Response {
+	existingAbonnementResponse := FindOneAbonnementById(id, r)
 
-	if !existingStructureResponse.Success {
-		return existingStructureResponse
+	if !existingAbonnementResponse.Success {
+		return existingAbonnementResponse
 	}
 
-	existingStructure := existingStructureResponse.Data.(*Structure)
+	existingAbonnement := existingAbonnementResponse.Data.(*Abonnement)
 
-	existingStructure.RaisonSocial = m.RaisonSocial
+	existingAbonnement.Date_deb = m.Date_deb
+	existingAbonnement.Date_fin = m.Date_fin
 
-	operationResult := r.Save(existingStructure)
+	operationResult := r.Save(existingAbonnement)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
@@ -75,7 +76,7 @@ func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Respo
 	return dtos.Response{Success: true, Data: operationResult.Result}
 }
 
-func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
+func DeleteOneAbonnementById(id uint, r AbonnementRepository) dtos.Response {
 	operationResult := r.DeleteOneById(id)
 
 	if operationResult.Error != nil {
@@ -85,7 +86,7 @@ func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
 	return dtos.Response{Success: true}
 }
 
-func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Response {
+func DeleteAbonnementByIds(multiId *dtos.MultiID, r AbonnementRepository) dtos.Response {
 	operationResult := r.DeleteByIds(&multiId.Ids)
 
 	if operationResult.Error != nil {
@@ -95,7 +96,7 @@ func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Res
 	return dtos.Response{Success: true}
 }
 
-func PaginationStructure(r StructureRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
+func PaginationAbonnement(r AbonnementRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
 	operationResult, totalPages := r.Pagination(p)
 
 	if operationResult.Error != nil {

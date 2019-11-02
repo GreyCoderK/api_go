@@ -12,3 +12,5 @@ type Abonnement struct {
 	Date_fin time.Time `json:"date_fin" binding:"required"`
 	Struc    Structure `gorm:"foreign" json:"stucture" binding:"required"`
 }
+
+type Abonnements []Abonnement

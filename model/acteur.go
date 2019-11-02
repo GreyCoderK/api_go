@@ -14,3 +14,5 @@ type Acteur struct {
 	Fonction Fonction  `json:"fonction" binding:"required"`
 	Struc    Structure `json:"structure" binding:"required"`
 }
+
+type Acteurs []Acteur

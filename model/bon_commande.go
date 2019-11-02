@@ -11,3 +11,5 @@ type BonCommande struct {
 	Art       []Article `json:"article"`
 	Liv       Facture   `json:"Facture" binding:"required"`
 }
+
+type BonCommandes []BonCommande

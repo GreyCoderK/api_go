@@ -5,13 +5,14 @@ import (
 	"log"
 
 	"../dtos"
+	. "../helpers"
 	. "../model"
 	. "../repositories"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
+func CreateActeur(m *Acteur, r ActeurRepository) dtos.Response {
 	uuidResult, err := uuid.NewUUID()
 
 	if err != nil {
@@ -20,53 +21,69 @@ func CreateStructure(m *Structure, r StructureRepository) dtos.Response {
 
 	m.ID = uint(uuidResult.ID())
 
+	if !ValideEmail(m.Email) {
+		return dtos.Response{Success: false, Message: "L'email entrez n'est pas valide"}
+	}
+
+	m.Pwd = HashAndSalt([]byte(m.Pwd))
+
 	operationResult := r.Save(m)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*Acteur)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func FindAllStructures(r StructureRepository) dtos.Response {
+func FindAllActeurs(r ActeurRepository) dtos.Response {
 	operationResult := r.FindAll()
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var datas = operationResult.Result.(*Structures)
+	var datas = operationResult.Result.(*Acteurs)
 
 	return dtos.Response{Success: true, Data: datas}
 }
 
-func FindOneStructureById(id uint, r StructureRepository) dtos.Response {
+func FindOneActeurById(id uint, r ActeurRepository) dtos.Response {
 	operationResult := r.FindOneById(id)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
 	}
 
-	var data = operationResult.Result.(*Structure)
+	var data = operationResult.Result.(*Acteur)
 
 	return dtos.Response{Success: true, Data: data}
 }
 
-func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Response {
-	existingStructureResponse := FindOneStructureById(id, r)
+func UpdateActeurById(id uint, m Acteur, r ActeurRepository) dtos.Response {
+	existingActeurResponse := FindOneActeurById(id, r)
 
-	if !existingStructureResponse.Success {
-		return existingStructureResponse
+	if !existingActeurResponse.Success {
+		return existingActeurResponse
 	}
 
-	existingStructure := existingStructureResponse.Data.(*Structure)
+	existingActeur := existingActeurResponse.Data.(*Acteur)
 
-	existingStructure.RaisonSocial = m.RaisonSocial
+	existingActeur.Nom = m.Nom
+	existingActeur.Prenom = m.Prenom
+	existingActeur.Statut = m.Statut
 
-	operationResult := r.Save(existingStructure)
+	if ValideEmail(m.Email) {
+		existingActeur.Email = m.Email
+	} else {
+		return dtos.Response{Success: false, Message: "L'email entrez n'est pas valide"}
+	}
+
+	existingActeur.Pwd = HashAndSalt([]byte(m.Pwd))
+
+	operationResult := r.Save(existingActeur)
 
 	if operationResult.Error != nil {
 		return dtos.Response{Success: false, Message: operationResult.Error.Error()}
@@ -75,7 +92,7 @@ func UpdateStructureById(id uint, m Structure, r StructureRepository) dtos.Respo
 	return dtos.Response{Success: true, Data: operationResult.Result}
 }
 
-func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
+func DeleteOneActeurById(id uint, r ActeurRepository) dtos.Response {
 	operationResult := r.DeleteOneById(id)
 
 	if operationResult.Error != nil {
@@ -85,7 +102,7 @@ func DeleteOneStructureById(id uint, r StructureRepository) dtos.Response {
 	return dtos.Response{Success: true}
 }
 
-func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Response {
+func DeleteActeurByIds(multiId *dtos.MultiID, r ActeurRepository) dtos.Response {
 	operationResult := r.DeleteByIds(&multiId.Ids)
 
 	if operationResult.Error != nil {
@@ -95,7 +112,7 @@ func DeleteStructureByIds(multiId *dtos.MultiID, r StructureRepository) dtos.Res
 	return dtos.Response{Success: true}
 }
 
-func PaginationStructure(r StructureRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
+func PaginationActeur(r ActeurRepository, c *gin.Context, p *dtos.Pagination) dtos.Response {
 	operationResult, totalPages := r.Pagination(p)
 
 	if operationResult.Error != nil {

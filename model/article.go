@@ -11,3 +11,5 @@ type Article struct {
 	QteSeuil     *uint            `gorm:"default:0" json:"quantite_en_stock"`
 	Categorie    CategorieArticle `json:"categorie" binding:"required"`
 }
+
+type Articles []Article

@@ -13,3 +13,5 @@ type Facture struct {
 	Acteur   Acteur    `gorm:"foreignkey:ActRefer"`
 	ActRefer *uint     `json:"acteur" binding:"required"`
 }
+
+type Factures []Facture

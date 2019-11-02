@@ -8,3 +8,5 @@ type CategorieArticle struct {
 	gorm.Model
 	Libelle string `gorm:"type:varchar(100);not null; unique" json:"libelle" binding:"required"`
 }
+
+type CategorieArticles []CategorieArticle

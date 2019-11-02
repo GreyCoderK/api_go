@@ -11,3 +11,5 @@ type Livraison struct {
 	Date    time.Time `json:"date" binding:"required"`
 	Montant *uint     `gorm:"default:0" json:"montant"`
 }
+
+type Livraisons []Livraison

@@ -12,9 +12,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StructureCreate(c *gin.Context) {
-	var m Structure
-	r := c.MustGet("structrepo").(*StructureRepository)
+func AbonnementCreate(c *gin.Context) {
+	var m Abonnement
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 	err := c.ShouldBindJSON(&m)
 
 	if err != nil {
@@ -25,7 +25,7 @@ func StructureCreate(c *gin.Context) {
 
 	code := http.StatusOK
 
-	res := services.CreateStructure(&m, *r)
+	res := services.CreateAbonnement(&m, *r)
 
 	if !res.Success {
 		code = http.StatusBadRequest
@@ -34,11 +34,11 @@ func StructureCreate(c *gin.Context) {
 	c.JSON(code, res)
 }
 
-func StructureHome(c *gin.Context) {
+func AbonnementHome(c *gin.Context) {
 	code := http.StatusOK
-	r := c.MustGet("structrepo").(*StructureRepository)
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 
-	response := services.FindAllStructures(*r)
+	response := services.FindAllAbonnements(*r)
 
 	if !response.Success {
 		code = http.StatusBadRequest
@@ -47,9 +47,9 @@ func StructureHome(c *gin.Context) {
 	c.JSON(code, response)
 }
 
-func StructureShow(c *gin.Context) {
+func AbonnementShow(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	r := c.MustGet("structrepo").(*StructureRepository)
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 
 	if err != nil {
 		response := dtos.Response{Success: false, Message: err.Error()}
@@ -59,7 +59,7 @@ func StructureShow(c *gin.Context) {
 
 	code := http.StatusOK
 
-	response := services.FindOneStructureById(uint(id), *r)
+	response := services.FindOneAbonnementById(uint(id), *r)
 
 	if !response.Success {
 		code = http.StatusBadRequest
@@ -68,16 +68,16 @@ func StructureShow(c *gin.Context) {
 	c.JSON(code, response)
 }
 
-func StructureUpdate(c *gin.Context) {
+func AbonnementUpdate(c *gin.Context) {
 	id, errors := strconv.ParseUint(c.Param("id"), 10, 32)
-	r := c.MustGet("structrepo").(*StructureRepository)
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 
 	if errors != nil {
 		response := dtos.Response{Success: false, Message: errors.Error()}
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	var m Structure
+	var m Abonnement
 
 	err := c.ShouldBindJSON(&m)
 
@@ -91,7 +91,8 @@ func StructureUpdate(c *gin.Context) {
 	}
 
 	code := http.StatusOK
-	response := services.UpdateStructureById(uint(id), m, *r)
+
+	response := services.UpdateAbonnementById(uint(id), m, *r)
 
 	if !response.Success {
 		code = http.StatusBadRequest
@@ -100,10 +101,9 @@ func StructureUpdate(c *gin.Context) {
 	c.JSON(code, response)
 }
 
-func StructureDelete(c *gin.Context) {
-
+func AbonnementDelete(c *gin.Context) {
 	id, errors := strconv.ParseUint(c.Param("id"), 10, 32)
-	r := c.MustGet("structrepo").(*StructureRepository)
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 
 	if errors != nil {
 		response := dtos.Response{Success: false, Message: errors.Error()}
@@ -113,7 +113,7 @@ func StructureDelete(c *gin.Context) {
 
 	code := http.StatusOK
 
-	response := services.DeleteOneStructureById(uint(id), *r)
+	response := services.DeleteOneAbonnementById(uint(id), *r)
 
 	if !response.Success {
 		code = http.StatusBadRequest
@@ -122,9 +122,9 @@ func StructureDelete(c *gin.Context) {
 	c.JSON(code, response)
 }
 
-func StructureDeleteMultiple(c *gin.Context) {
+func AbonnementDeleteMultiple(c *gin.Context) {
 	var multiID dtos.MultiID
-	r := c.MustGet("structrepo").(*StructureRepository)
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 
 	err := c.ShouldBindJSON(&multiID)
 
@@ -147,7 +147,7 @@ func StructureDeleteMultiple(c *gin.Context) {
 
 	code := http.StatusOK
 
-	response := services.DeleteStructureByIds(&multiID, *r)
+	response := services.DeleteAbonnementByIds(&multiID, *r)
 
 	if !response.Success {
 		code = http.StatusBadRequest
@@ -156,13 +156,13 @@ func StructureDeleteMultiple(c *gin.Context) {
 	c.JSON(code, response)
 }
 
-func StructurePagination(c *gin.Context) {
+func AbonnementPagination(c *gin.Context) {
 	code := http.StatusOK
 
-	r := c.MustGet("structrepo").(*StructureRepository)
+	r := c.MustGet("abonnementrepo").(*AbonnementRepository)
 	pagination := helpers.GeneratePaginationRequest(c)
 
-	response := services.PaginationStructure(*r, c, pagination)
+	response := services.PaginationAbonnement(*r, c, pagination)
 
 	if !response.Success {
 		code = http.StatusBadRequest
